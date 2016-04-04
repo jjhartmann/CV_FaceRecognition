@@ -22,5 +22,23 @@ Y7 = fftshift(fft2(image7))/1000000;
 
 
 
+%% Create feature vectors for images.
+norm_const = 1000000;
+FeatureVectorMap = [];
+FeatureVectorMap(40).vec = [];
+for i = 1:40
+    location = strcat('att_faces/s', int2str(i), '/');
+    Y = zeros(112, 92);
+   for j = 1:5
+       current = strcat(location, int2str(j), '.pgm');
+       img = imread(current);
+       Y = (Y + fftshift(fft2(img)))/2;
+   end
+   [n, m] = size(Y);
+   FeatureVectorMap(i).vec = Y((n/2 - 1):n, (m/2 - 1):m, 1)/norm_const;
+end
+
+
+
 
 
