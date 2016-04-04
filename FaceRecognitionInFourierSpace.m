@@ -39,6 +39,34 @@ for i = 1:40
 end
 
 
+%% Test the image
+sel = -1;
+while (sel > 40 || sel < 1)
+    sel = input('Choose an image set between 1-40: ')
+end
+
+% Gen random image form test set. 
+imgIndex = randi(5) + 5;
+location = strcat('att_faces/s', int2str(sel), '/', int2str(imgIndex), '.pgm');
+
+testImage = imread(location);
+testY = fftshift(fft2(testImage));
+[n, m] = size(testY);
+testY = testY((n/2 - 1):n, (m/2 - 1):m, 1)/norm_const;
+
+min = inf;
+index = -1;
+for i = 1:40
+    euclideanDistance = norm(testY - FeatureVectorMap(i).vec);
+    if (min > euclideanDistance)
+        min = euclideanDistance;
+        index = i;
+    end
+end
+
+disp(['Answer is image set: ', int2str(index)])
+
+
 
 
 
