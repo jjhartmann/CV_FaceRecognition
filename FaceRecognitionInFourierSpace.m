@@ -28,14 +28,27 @@ FeatureVectorMap = [];
 FeatureVectorMap(40).vec = [];
 for i = 1:40
     location = strcat('att_faces/s', int2str(i), '/');
-    Y = zeros(112, 92);
+    Y = zeros(128, 128);
    for j = 1:5
        current = strcat(location, int2str(j), '.pgm');
        img = imread(current);
-       Y = (Y + fftshift(fft2(img)))/2;
+       
+       % Pad image to a power of 2
+       [n m] = size(img);
+       imgpad = padarray(img, [0, floor(128-m)/2], 'replicate', 'both');
+       imgpad = padarray(imgpad', [0 floor(128-n)/2], 'replicate', 'both')';
+       
+       Y = (Y + fftshift(fft2(imgpad)));
    end
+   % avg
+   Y = Y/5;
+   
    [n, m] = size(Y);
-   FeatureVectorMap(i).vec = Y((n/2 - 1):n, (m/2 - 1):m, 1)/norm_const;
+   Y = Y((n/2):n, (m/2):m, 1);
+   YR = real(Y);
+   YI = imag(Y);
+   Y_mg = sqrt(YR.^2 + YI.^2)/2;
+   FeatureVectorMap(i).vec = Y_mg;
 end
 
 
@@ -50,14 +63,21 @@ imgIndex = randi(5) + 5;
 location = strcat('att_faces/s', int2str(sel), '/', int2str(imgIndex), '.pgm');
 
 testImage = imread(location);
-testY = fftshift(fft2(testImage));
-[n, m] = size(testY);
-testY = testY((n/2 - 1):n, (m/2 - 1):m, 1)/norm_const;
+[n, m] = size(testImage);
+imgpad = padarray(testImage, [0, floor(128-m)/2], 'replicate', 'both');
+imgpad = padarray(imgpad', [0 floor(128-n)/2], 'replicate', 'both')';
+
+[n, m] = size(imgpad);
+testY = fftshift(fft2(imgpad));
+testY = testY((n/2):n, (m/2):m, 1);
+YR = real(testY);
+YI = imag(testY);
+Y_mg = sqrt(YR.^2 + YI.^2)/2;
 
 min = inf;
 index = -1;
-for i = 1:40
-    euclideanDistance = norm(testY - FeatureVectorMap(i).vec);
+ for i = 1:40
+    euclideanDistance = norm(real(Y_mg) - real(FeatureVectorMap(i).vec));
     if (min > euclideanDistance)
         min = euclideanDistance;
         index = i;
