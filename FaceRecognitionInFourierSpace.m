@@ -45,8 +45,14 @@ for i = 1:40
    
    [n, m] = size(Y);
    Y = Y((n/2):n, (m/2):m, 1);
-   YR = real(Y);
-   YI = imag(Y);
+   
+   % remove higher frequencies. 
+   T = rot90(Y);
+   T = tril(T, 0);
+   T = rot90(T');
+   
+   YR = real(T);
+   YI = imag(T);
    Y_mg = sqrt(YR.^2 + YI.^2)/2;
    FeatureVectorMap(i).vec = Y_mg;
 end
@@ -70,8 +76,14 @@ imgpad = padarray(imgpad', [0 floor(128-n)/2], 'replicate', 'both')';
 [n, m] = size(imgpad);
 testY = fftshift(fft2(imgpad));
 testY = testY((n/2):n, (m/2):m, 1);
-YR = real(testY);
-YI = imag(testY);
+
+% remove higher frequencies. 
+T = rot90(testY);
+T = tril(T, 0);
+T = rot90(T');
+
+YR = real(T);
+YI = imag(T);
 Y_mg = sqrt(YR.^2 + YI.^2)/2;
 
 min = inf;
