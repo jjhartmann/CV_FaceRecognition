@@ -83,7 +83,8 @@ disp(['Answer is image set: ', int2str(index)])
 
 
 %% TEST ALL
-
+errorcount = 0;
+successcount = 0;
 for k = 1:40
     % Gen random image form test set. 
     imgIndex = randi(2) + 8;
@@ -120,6 +121,21 @@ for k = 1:40
     end
 
     disp(['Image test: ', int2str(k),'  Image set: ', int2str(index)])
+    
+    if k == index
+        successcount = successcount + 1;
+    else
+        errorcount = errorcount + 1;
+    end
 end
 
+disp([' '])
+disp([' '])
+disp(['STATS FOR TEST ALL'])
+disp([' '])
+disp(['ERROR:   ' int2str(errorcount)])
+disp(['SUCCESS: ' int2str(successcount)])
+
+
+%% Function to Process image and use FFT
 
