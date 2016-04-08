@@ -12,27 +12,9 @@ for i = 1:40
    for j = 1:5
        current = strcat(location, int2str(j), '.pgm');
        img = imread(current);
-       
-       % Pad image to a power of 2
-       [n m] = size(img);
-       imgpad = padarray(img, [0, floor(128-m)/2], 'replicate', 'both');
-       imgpad = padarray(imgpad', [0 floor(128-n)/2], 'replicate', 'both')';
-       
-       % Get frequency Information
-       Y(j).val = fftshift(fft2(imgpad));
-       [n, m] = size(Y(j).val);
-       
-       YR = real(Y(j).val);
-       YI = imag(Y(j).val);
-       Y(j).val = sqrt(YR.^2 + YI.^2)/2;
-       
-       T = Y(j).val;
-       Y(j).val = T((n/2):n, (m/2):m, 1);
-        
-       % remove higher frequencies. 
-       T = rot90(Y(j).val);
-       T = tril(T, K_VAL);
-       Y(j).val = rot90(T');
+ 
+        % Extract FFT Features
+       Y(j).val = extractFeatures(img, K_VAL);
    end
 
    FeatureVectorMap(i).vec = Y;
@@ -50,22 +32,7 @@ imgIndex = randi(5) + 5;
 location = strcat('att_faces/s', int2str(sel), '/', int2str(imgIndex), '.pgm');
 
 testImage = imread(location);
-[n, m] = size(testImage);
-imgpad = padarray(testImage, [0, floor(128-m)/2], 'replicate', 'both');
-imgpad = padarray(imgpad', [0 floor(128-n)/2], 'replicate', 'both')';
-
-[n, m] = size(imgpad);
-testY = fftshift(fft2(imgpad));
-testY = testY((n/2):n, (m/2):m, 1);
-
-% remove higher frequencies. 
-T = rot90(testY);
-T = tril(T, K_VAL);
-T = rot90(T');
-
-YR = real(T);
-YI = imag(T);
-Y_mg = sqrt(YR.^2 + YI.^2)/2;
+Y_mg = extractFeatures(testImage, K_VAL);
 
 min = inf;
 index = -1;
@@ -89,24 +56,9 @@ for k = 1:40
     % Gen random image form test set. 
     imgIndex = randi(2) + 8;
     location = strcat('att_faces/s', int2str(k), '/', int2str(imgIndex), '.pgm');
-
+   
     testImage = imread(location);
-    [n, m] = size(testImage);
-    imgpad = padarray(testImage, [0, floor(128-m)/2], 'replicate', 'both');
-    imgpad = padarray(imgpad', [0 floor(128-n)/2], 'replicate', 'both')';
-
-    [n, m] = size(imgpad);
-    testY = fftshift(fft2(imgpad));
-    testY = testY((n/2):n, (m/2):m, 1);
-
-    % remove higher frequencies. 
-    T = rot90(testY);
-    T = tril(T, K_VAL);
-    T = rot90(T');
-
-    YR = real(T);
-    YI = imag(T);
-    Y_mg = sqrt(YR.^2 + YI.^2)/2;
+    Y_mg = extractFeatures(testImage, K_VAL);
 
     min = inf;
     index = -1;
