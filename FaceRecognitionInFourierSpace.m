@@ -137,5 +137,4 @@ disp(['ERROR:   ' int2str(errorcount)])
 disp(['SUCCESS: ' int2str(successcount)])
 
 
-%% Function to Process image and use FFT
 
