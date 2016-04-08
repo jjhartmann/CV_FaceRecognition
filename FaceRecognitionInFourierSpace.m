@@ -3,13 +3,14 @@
 
 %% Create feature vectors for images.
 norm_const = 1000000;
-K_VAL = -15;
+K_VAL = -52;
+TR_DATA = 8;
 FeatureVectorMap = [];
 FeatureVectorMap(40).vec = [];
 for i = 1:40
     location = strcat('att_faces/s', int2str(i), '/');
     Y(5).val = zeros(128, 128);
-   for j = 1:5
+   for j = 1:TR_DATA
        current = strcat(location, int2str(j), '.pgm');
        img = imread(current);
  
@@ -28,7 +29,7 @@ while (sel > 40 || sel < 1)
 end
 
 % Gen random image form test set. 
-imgIndex = randi(5) + 5;
+imgIndex = randi(TR_DATA) + abs(10 - TR_DATA);
 location = strcat('att_faces/s', int2str(sel), '/', int2str(imgIndex), '.pgm');
 
 testImage = imread(location);
@@ -37,7 +38,7 @@ Y_mg = extractFeatures(testImage, K_VAL);
 min = inf;
 index = -1;
  for i = 1:40
-    for j = 1:5
+    for j = 1:TR_DATA
         euclideanDistance = norm(real(Y_mg) - real(FeatureVectorMap(i).vec(j).val));
         if (min > euclideanDistance)
             min = euclideanDistance;
@@ -54,7 +55,7 @@ errorcount = 0;
 successcount = 0;
 for k = 1:40
     % Gen random image form test set. 
-    imgIndex = randi(2) + 8;
+    imgIndex = randi(TR_DATA) + abs(10 - TR_DATA);
     location = strcat('att_faces/s', int2str(k), '/', int2str(imgIndex), '.pgm');
    
     testImage = imread(location);
@@ -63,7 +64,7 @@ for k = 1:40
     min = inf;
     index = -1;
      for i = 1:40
-        for j = 1:5
+        for j = 1:TR_DATA
             euclideanDistance = norm(real(Y_mg) - real(FeatureVectorMap(i).vec(j).val));
             if (min > euclideanDistance)
                 min = euclideanDistance;

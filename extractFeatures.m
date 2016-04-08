@@ -16,7 +16,7 @@ YI = imag(Y);
 Y = sqrt(YR.^2 + YI.^2)/2;
 
 T = Y;
-Y = T((n/2 - 2):n, (m/2 + 2):m, 1);
+Y = T((n/2 - 1):n, (m/2 + 1):m, 1);
 
 % remove higher frequencies. 
 T = rot90(Y);
