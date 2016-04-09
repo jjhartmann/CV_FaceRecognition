@@ -4,7 +4,7 @@
 %% Create feature vectors for images.
 norm_const = 1000000;
 K_VAL = -52;
-TR_DATA = 8;
+TR_DATA = 10;
 FeatureVectorMap = [];
 FeatureVectorMap(40).vec = [];
 for i = 1:40
